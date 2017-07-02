@@ -1,5 +1,6 @@
 export class Config {
 
+    fileChanged: boolean = false;
     file: File;
     headline: String;
     position: number = 1;

@@ -15,5 +15,6 @@ export class ConfigComponent {
 
     public fileSelected(file) {
         this.model.file = file;
+        this.model.fileChanged = true;
     }
 }

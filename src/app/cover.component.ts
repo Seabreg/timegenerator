@@ -33,8 +33,8 @@ export class CoverComponent implements DoCheck, OnInit {
     }
 
     ngDoCheck() {
-        if (this.config.file && ! this.loaded) {
-            this.loaded = true;
+        if (this.config.file && this.config.fileChanged) {
+            this.config.fileChanged = false;
             this.reader.readAsDataURL(this.config.file);
         }
 
@@ -83,7 +83,7 @@ export class CoverComponent implements DoCheck, OnInit {
         /* Draw the headline */
         if (this.config.headline) {
             ctx.font = "24px Franklin Gothic";
-            ctx.fillStyle="white";
+            ctx.fillStyle = this.config.headlineColor;
             ctx.textAlign = "right";
 
             var padding = 50;
