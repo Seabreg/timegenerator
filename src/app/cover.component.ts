@@ -55,6 +55,11 @@ export class CoverComponent implements DoCheck, OnInit {
         this.image.src = this.reader.result;
     }
 
+    save() {
+        var data = this.canvas.toDataURL();
+        window.open(data);
+    }
+
     draw() {
         this.drawBackground();
         this.drawForeground();

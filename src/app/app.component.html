@@ -4,13 +4,13 @@
 
             <div class="col-2" style="background-color: #EEEEEE;">
 
-                <config #config></config>
+                <config #config (saveEvent)="cover.save()"></config>
 
             </div>
 
             <div class="col">
 
-                <cover [(config)]="config.model"></cover>
+                <cover [(config)]="config.model" #cover></cover>
 
             </div>
 
