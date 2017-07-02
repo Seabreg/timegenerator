@@ -9,6 +9,8 @@ Time logo, sourced from [Wikipedia](https://en.wikipedia.org/wiki/File:Time_Maga
 
 ![Sample Image](sample.png)
 
+[Demo on Github Pages](https://kianryan.github.io/timegenerator/)
+
 ## Limitations
 
 Doesn't handle rotated EXIF images.  If your sourced images appear sideways, rotate them in something sensible and try again.
