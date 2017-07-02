@@ -7,7 +7,7 @@ Time logo, sourced from [Wikipedia](https://en.wikipedia.org/wiki/File:Time_Maga
 
 ## Go for it
 
-![sample.png]
+![Sample Image](sample.png)
 
 ## Limitations
 
