@@ -19,6 +19,7 @@ export class CoverComponent implements DoCheck, OnInit {
     private ctx: any;
     private width: number = 560;
     private height: number = 746;
+    private ratio: number = this.width / this.height;
 
     private image: any = new Image();
     private reader: FileReader = new FileReader();
@@ -71,7 +72,23 @@ export class CoverComponent implements DoCheck, OnInit {
         ctx.fillStyle="black";
         ctx.fillRect(0, 0, this.width, this.height);
 
-        ctx.drawImage(this.image, 0, 0);
+        if (this.image.width > 0 && this.image.height > 0) {
+            var heightScale = this.height/this.image.height;
+            var widthScale = this.width/this.image.width;
+
+            // Determine a crop, by which the total centre of the image is
+            // occupied.
+
+            var scale = Math.max(heightScale, widthScale);
+
+            var newWidth = this.image.width * scale;
+            var newHeight = this.image.height * scale;
+
+            var perWidth = (this.image.width - newWidth) / this.image.width / 2;
+            var perHeight = (this.image.height - newHeight) / this.image.height / 2;
+
+            ctx.drawImage(this.image, perWidth, perHeight, newWidth, newHeight);
+        }
     }
 
     drawForeground() {
