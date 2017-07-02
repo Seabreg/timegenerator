@@ -4,6 +4,9 @@ export class Config {
     headline: String;
     position: number = 1;
 
+    headlineColor: string = "#FFFFFF";
+    logoColor: string = "#e90606";
+
     constructor() {
     }
 }

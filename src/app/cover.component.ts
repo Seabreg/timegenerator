@@ -134,7 +134,7 @@ export class CoverComponent implements DoCheck, OnInit {
         /* Boss the logo */
         ctx.strokeStyle="rgba(0,0,0,0)";
         ctx.miterLimit=4;
-        ctx.fillStyle="#e90606";
+        ctx.fillStyle=this.config.logoColor;
         ctx.transform(5, // Horizontal Scaling
                       0,  // Horizontal Skewing
                       0,  // Vertical Skewing

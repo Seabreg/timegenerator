@@ -5,9 +5,15 @@
         <input type="file" class="form-control" id="file" name="file" (change)="fileSelected($event.target.files[0])" />
     </div>
 
-    <p>
-        Filename: {{model.file?.name}}
-    </p>
+    <div class="form-group">
+        <label>Logo Colour</label>
+        <input type="text" class="form-control" id="logoColor" name="logoColor" [(ngModel)]="model.logoColor" />
+    </div>
+
+    <div class="form-group">
+        <label>Headline Colour</label>
+        <input type="text" class="form-control" id="headlineColor" name="headlineColor" [(ngModel)]="model.headlineColor" />
+    </div>
 
     <div class="form-group">
         <label>Headline</label>
