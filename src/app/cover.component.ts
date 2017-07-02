@@ -127,7 +127,7 @@ export class CoverComponent implements DoCheck, OnInit {
                 ctx.textAlign = "right";
             }
 
-            if (this.config.position < 2) {
+            if (this.config.position < 3) {
                 var lines = this.config.headline.split("\n");
                 var y = 200;
                 for(let line of lines) {
