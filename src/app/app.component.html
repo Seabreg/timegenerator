@@ -4,22 +4,13 @@
 
             <div class="col-2" style="background-color: #EEEEEE;">
 
-                <form class="form">
-
-                    <div class="form-group">
-                        <label>Background Image</label>
-                        <input type="file" class="form-control" />
-
-
-                    </div>
-
-                </form>
+                <config #config></config>
 
             </div>
 
             <div class="col">
 
-                <cover></cover>
+                <cover [(config)]="config.model"></cover>
 
             </div>
 

@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, DoCheck, OnInit } from '@angular/core';
+import { Config } from './config';
 
 @Component({
     selector: 'cover',
@@ -6,48 +7,129 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
     template: `<canvas #canvas></canvas>`
 })
 
-export class CoverComponent {
+export class CoverComponent implements DoCheck, OnInit {
 
     componentName: 'CoverComponent';
 
+    private oldConfig: Config;
+    @Input() public config: Config;
+
     @ViewChild('canvas') canvasRef:ElementRef;
     private canvas: any;
+    private ctx: any;
+    private width: number = 560;
+    private height: number = 746;
 
-    ngOnInit() {
-        
+    private image: any = new Image();
+    private reader: FileReader = new FileReader();
+
+    private timeColor: string = "#e90606";
+
+    private loaded: boolean = false;
+    
+    constructor() {
+        this.reader.addEventListener("load", () => { this.loadFile() }, false);
+        this.image.addEventListener("load", () => { this.draw() }, false);
     }
 
-    ngAfterViewInit() {
+    ngDoCheck() {
+        if (this.config.file && ! this.loaded) {
+            this.loaded = true;
+            this.reader.readAsDataURL(this.config.file);
+        }
 
-        var width = 560,
-            height = 746,
-            borderWidth = Math.round(0.04 * width),
-            innerBorderWidth = 2,
-            timeColor = "#e90606";
+        this.draw();
+    }
 
+    ngOnInit() {
         this.canvas = this.canvasRef.nativeElement;
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.canvas.style="border: 1px solid black;"
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
 
-        var ctx = this.canvas.getContext('2d');
-        ctx.fillRect(0, 0, width, height);
+        this.ctx = this.canvas.getContext('2d');
 
-        /* Add border 1 */
-        ctx.lineWidth = borderWidth;
-        ctx.strokeStyle = timeColor;
-        ctx.strokeRect(borderWidth / 2, 
-                       borderWidth / 2, 
-                       width - borderWidth, 
-                       height - borderWidth);
+        this.draw();
+    }
 
-        /* Add border 2 */
-        ctx.lineWidth = innerBorderWidth;
-        ctx.strokeStyle = 'white';
-        ctx.strokeRect(borderWidth, 
-                       borderWidth, 
-                       width - borderWidth * 2, 
-                       height - borderWidth * 2);
+    loadFile() {
+        this.image.src = this.reader.result;
+    }
+
+    draw() {
+        this.drawBackground();
+        this.drawForeground();
+    }
+
+    drawBackground() {
+        var ctx = this.ctx;
+
+        ctx.fillStyle="black";
+        ctx.fillRect(0, 0, this.width, this.height);
+
+        ctx.drawImage(this.image, 0, 0);
+    }
+
+    drawForeground() {
+        this.drawBorder();
+        this.drawHeadline();
+        this.drawLogo();
+    }
+
+    drawHeadline() {
+        var ctx = this.ctx;
+
+        ctx.save();
+
+        /* Draw the headline */
+        if (this.config.headline) {
+            ctx.font = "24px Franklin Gothic";
+            ctx.fillStyle="white";
+            ctx.textAlign = "right";
+
+            var padding = 50;
+            var x: number;
+            var y: number;
+
+
+            /* Set headline justification */
+            if (this.config.position == 0 || 
+                this.config.position == 3) {
+                x = padding;
+                ctx.textAlign = "left";
+            } else if (this.config.position == 1 || 
+                       this.config.position == 4) {
+                x = this.width / 2;
+                ctx.textAlign = "center";
+            } else  {
+                x = this.width - padding;
+                ctx.textAlign = "right";
+            }
+
+            if (this.config.position < 2) {
+                var lines = this.config.headline.split("\n");
+                var y = 200;
+                for(let line of lines) {
+                    ctx.fillText(line, x, y);
+                    y += 24;
+                }
+            } else {
+                var lines = this.config.headline.split("\n").reverse();
+                var y = this.height - padding;
+                for(let line of lines) {
+                    ctx.fillText(line, x, y);
+                    y -= 24;
+                }
+            }
+
+        }
+
+        ctx.restore();
+    }
+
+    drawLogo() {
+        var ctx = this.ctx;
+
+        ctx.save();
 
         /* Boss the logo */
         ctx.strokeStyle="rgba(0,0,0,0)";
@@ -99,7 +181,7 @@ export class CoverComponent {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
-        ctx.save();
+        //ctx.save();
         ctx.beginPath();
         ctx.moveTo(33.969088,0.13816675);
         ctx.bezierCurveTo(33.969088,0.13816675,35.514689,4.5931966,35.766019,5.2452068999999995);
@@ -149,8 +231,8 @@ export class CoverComponent {
         ctx.bezierCurveTo(33.169084,0.15501680000000229,33.969088,0.13819780000000229,33.969088,0.13819780000000229);
         ctx.fill();
         ctx.stroke();
-        ctx.restore();
-        ctx.save();
+        //ctx.restore();
+        //ctx.save();
         ctx.beginPath();
         ctx.moveTo(26.074275,21.81165);
         ctx.bezierCurveTo(25.269669,21.811510000000002,23.904073,21.68677,22.879943,21.686209);
@@ -181,8 +263,8 @@ export class CoverComponent {
         ctx.bezierCurveTo(26.309578,21.794559,26.143922999999997,21.812638999999997,26.074222,21.811659);
         ctx.fill();
         ctx.stroke();
-        ctx.restore();
-        ctx.save();
+        //ctx.restore();
+        //ctx.save();
         ctx.beginPath();
         ctx.moveTo(60.173142,1.7228797);
         ctx.lineTo(60.163641999999996,10.24092);
@@ -251,6 +333,31 @@ export class CoverComponent {
         ctx.fill();
         ctx.stroke();
 
+        ctx.restore();
+    }
 
+    drawBorder() {
+
+        var ctx = this.ctx;
+
+
+        var borderWidth: number = Math.round(0.04 * this.width);
+        var innerBorderWidth: number = 2;
+
+        /* Add border 1 */
+        ctx.lineWidth = borderWidth;
+        ctx.strokeStyle = this.timeColor;
+        ctx.strokeRect(borderWidth / 2, 
+                       borderWidth / 2, 
+                       this.width - borderWidth, 
+                       this.height - borderWidth);
+
+        /* Add border 2 */
+        ctx.lineWidth = innerBorderWidth;
+        ctx.strokeStyle = 'white';
+        ctx.strokeRect(borderWidth, 
+                       borderWidth, 
+                       this.width - borderWidth * 2, 
+                       this.height - borderWidth * 2);
     }
 }
